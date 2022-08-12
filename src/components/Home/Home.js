@@ -9,24 +9,9 @@ const Home = ({ socket }) => {
   const [appKey, setKey] = useState("");
   const [socketId, setSocketId] = useState(null);
 
-  // const [message, setMessage] = useState();
-  // const [msgReceived, setMsgReceived] = useState();
-
   const navigate = useNavigate();
 
-  // const joinRoom = () => {
-  //   if (room !== "") {
-  //     socket.emit("join_room", room)
-  //   }
-  // }
-
-  // const sendMessage = () => {
-  //   socket.emit("send_message", { message, room })
-  // };
-
   useEffect(() => {
-
-    // console.log("Log 1");
 
     socket.on("connect", () => {
       console.log(`Status: ${socket.connected}; ID: ${socket.id}`); // true
@@ -38,25 +23,15 @@ const Home = ({ socket }) => {
       console.log(socket.connected); // false
     });
 
-    // socket.on("receive_msg", (data) => {
-    //   // alert(data.name)
-    //   setMsgReceived(data.message)
-    // })
-
     socket.on("new_key", (data) => {
-      // setMsgReceived(data.message)
-      console.log("SOcket: ", socketId)
       console.log("NEw key: ", data)
       setKey(data.key)
-      // console.log("Set key: ", appKey)
     })
 
     socket.on("screen_conn", (data) => {
       // setMsgReceived(data.message)
       console.log("screen conn: ", data)
       navigate('/screen', { state: data.uobj});
-      // setKey(data.key)
-      // console.log("Set key: ", appKey)
     })
   }, [socket])
 
@@ -104,36 +79,9 @@ const Home = ({ socket }) => {
   return (
     <div className="App">
 
-      {/* <input
-        placeholder="Room..."
-        onChange={(event) => {
-          setRoom(event.target.value)
-        }} />
-      <button onClick={joinRoom}>Join Room</button>
-
-      <input
-        placeholder="Message..."
-        onChange={(event) => {
-          setMessage(event.target.value)
-        }} />
-      <button onClick={sendMessage}>Send Message</button>
-      <h1>Message</h1>
-      {msgReceived}
-      <hr
-        style={{
-          background: 'lime',
-          color: 'lime',
-          borderColor: 'lime',
-          height: '3px',
-        }}
-      /> */}
-      <div>
-
-
         <h1>KEY</h1>
         <h2>{appKey}</h2>
 
-      </div>
     </div>
   )
 }

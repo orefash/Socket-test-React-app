@@ -43,33 +43,7 @@ export default function (props) {
             <div className="Auth-form-container">
             <form className="Auth-form">
                 <div className="Auth-form-content">
-                    <h3 className="Auth-form-title">Dashboard Screen</h3>
-                 
-
-                    {/* <div className="form-group mt-3">
-                        <label>Screen Key</label>
-                        <input
-                            // disabled={isKeyEnabled}
-                            type="text"
-                            className="form-control mt-1"
-                            placeholder="Enter Key"
-                            // onChange={(event) => {
-                            //     setKey(event.target.value)
-                            // }}
-                        />
-                    </div>
-
-                    <div className="d-grid gap-2 mt-3">
-                        <button 
-                        type="button" 
-                        className="btn btn-success"                        
-                        // onClick={validateKey}
-                        >
-                            Connect
-                        </button>
-                    </div> */}
-
-                    
+                    <h3 className="Auth-form-title">Dashboard Screen</h3>                    
 
                     <hr />
 

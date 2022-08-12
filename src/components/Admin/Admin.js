@@ -1,21 +1,28 @@
 
 import "./style.css"
 import { useState, useEffect } from "react"
-import {useLocation, useNavigate} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function ({ }) {
     const [isKeyEnabled, setKeyEnabled] = useState(false);
     const [connMsg, setConnMsg] = useState("");
     const [key, setKey] = useState("")
-    
+
     const location = useLocation();
     const navigate = useNavigate();
 
-    
+
     const [name, setName] = useState("");
     const [uname, setUname] = useState("");
     const [age, setAge] = useState("");
     const [text, setText] = useState("");
+    const [connected, setConnected] = useState(false);
+
+    const connectEffect = () => {
+        setConnMsg("Screen is connected");
+        setConnected(true);
+        setKeyEnabled(!isKeyEnabled)
+    }
 
     const validateKey = () => {
 
@@ -26,7 +33,7 @@ export default function ({ }) {
                 //   Accept: "application/json",
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 "key": key,
                 "user": uname
             })
@@ -34,18 +41,19 @@ export default function ({ }) {
             .then((response) => {
                 // console.log("Response: ", response)
                 if (response.status === 200) return response.json();
-                
+
                 throw new Error("invalid key");
             })
             .then((resObject) => {
                 //   setUser(resObject.user);
-                setConnMsg("Screen is connected")
+                connectEffect();
 
                 console.log("get message response: ", resObject)
                 // navigate('/admin', { state: resObject.user});
             })
             .catch((err) => {
                 setConnMsg("Key is Invalid")
+                setConnected(false)
                 console.log(err);
             });
 
@@ -53,29 +61,29 @@ export default function ({ }) {
 
     useEffect(() => {
 
-        if(location.state){
+        if (location.state) {
 
             // console.log("Location state: ", location.state)
 
-            if(location.state.name)
+            if (location.state.name)
                 setName(location.state.name)
-                
-            if(location.state.username)
+
+            if (location.state.username)
                 setUname(location.state.username)
 
-            if(location.state.age)
+            if (location.state.age)
                 setAge(location.state.age)
-            
 
-            if(location.state.text)
+
+            if (location.state.text)
                 setText(location.state.text)
-        }else{
+        } else {
 
-            
+
             navigate('/auth');
         }
-            
-       
+
+
         // getLoginKey()
     }, [])
 
@@ -106,19 +114,28 @@ export default function ({ }) {
                     </div>
 
                     <div className="d-grid gap-2 mt-3">
-                        <button 
-                        type="button" 
-                        className="btn btn-success"                        
-                        onClick={validateKey}>
-                            Connect
-                        </button>
+
+                        {!connected
+                            ? <button
+                                type="button"
+                                className="btn btn-success"
+                                onClick={validateKey}>
+                                Connect
+                            </button>
+                            : <button
+                                type="button"
+                                className="btn btn-danger"
+                                >
+                                Disconnect
+                            </button>
+                        }
                     </div>
 
                     <div className="text-center mt-2">
-                            <span className="label">
-                                { connMsg }
-                            </span>
-                        </div>
+                        <span className="label">
+                            {connMsg}
+                        </span>
+                    </div>
 
                     <hr />
 
@@ -154,15 +171,15 @@ export default function ({ }) {
                     </div>
 
                     <div className="d-grid gap-2 mt-3">
-                        <button 
-                        type="button" 
-                        className="btn btn-primary"                        
+                        <button
+                            type="button"
+                            className="btn btn-primary"
                         // onClick={validateKey}
                         >
                             Update
                         </button>
                     </div>
-                    
+
                 </div>
             </form>
         </div>
