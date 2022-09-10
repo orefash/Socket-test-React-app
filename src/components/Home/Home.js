@@ -11,11 +11,23 @@ const Home = ({ socket }) => {
 
   const navigate = useNavigate();
 
+  useEffect(() => { 
+
+    // console.log("Set key: ", appKey) 
+    const checkConn = JSON.parse(localStorage.getItem('axs-key'));
+
+    if(checkConn){
+      console.log("check connect: ",checkConn)
+      navigate('/screen', { state: checkConn});
+    }
+
+  }, [])
+
   useEffect(() => {
 
     socket.on("connect", () => {
       console.log(`Status: ${socket.connected}; ID: ${socket.id}`); // true
-      setSocketId(socket.id)
+      // setSocketId(socket.id)
       getLoginKey();
     });
 
@@ -24,22 +36,24 @@ const Home = ({ socket }) => {
     });
 
     socket.on("new_key", (data) => {
-      console.log("NEw key: ", data)
+      // console.log("NEw key: ", data)
       setKey(data.key)
     })
 
     socket.on("screen_conn", (data) => {
       // setMsgReceived(data.message)
+      console.log("in conn, key: ", socket.id)
       console.log("screen conn: ", data)
-      navigate('/screen', { state: data.uobj});
+      
+      if(data.key === socket.id){
+        localStorage.setItem("axs-key", JSON.stringify(data.user+"-"+data.key))
+        navigate('/screen', { state: data.user+"-"+data.key});
+      }
+      
     })
   }, [socket])
 
-  useEffect(() => { 
-
-    // console.log("Set key: ", appKey) 
-
-  }, [])
+  
 
 
   useEffect(() => { console.log("Set key: ", appKey) }, [appKey])
@@ -61,7 +75,7 @@ const Home = ({ socket }) => {
       })
       .then((resObject) => {
         //   setUser(resObject.user);
-        console.log("get message response: ", resObject)
+        console.log("get Login Key response: ", resObject)
       })
       .catch((err) => {
         console.log(err);

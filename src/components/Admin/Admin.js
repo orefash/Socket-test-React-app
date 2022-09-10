@@ -16,12 +16,60 @@ export default function ({ }) {
     const [uname, setUname] = useState("");
     const [age, setAge] = useState("");
     const [text, setText] = useState("");
+    // const [user, setUser] = useState(null);
     const [connected, setConnected] = useState(false);
 
     const connectEffect = () => {
+
+        localStorage.setItem("admin-connect", JSON.stringify(uname))
         setConnMsg("Screen is connected");
         setConnected(true);
         setKeyEnabled(!isKeyEnabled)
+    }
+
+    const disconnectUser = () => {
+
+        localStorage.removeItem("admin-connect")
+        setConnMsg("Screen is disconnected");
+        setConnected(false);
+        setKeyEnabled(!isKeyEnabled)
+    }
+
+    const updateData = () => {
+
+        fetch("http://localhost:3001/update-data", {
+            method: "POST",
+            // credentials: "include",
+            headers: {
+                //   Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "name": name,
+                "user": uname,
+                "age": age,
+                "text": text
+            })
+        })
+            .then((response) => {
+                // console.log("Response: ", response)
+                if (response.status === 200) return response.json();
+
+                throw new Error("invalid key");
+            })
+            .then((resObject) => {
+                //   setUser(resObject.user);
+                // connectEffect();
+
+                console.log("update response: ", resObject)
+                // navigate('/admin', { state: resObject.user});
+            })
+            .catch((err) => {
+                // setConnMsg("Key is Invalid")
+                // setConnected(false)
+                console.log(err);
+            });
+
     }
 
     const validateKey = () => {
@@ -84,6 +132,16 @@ export default function ({ }) {
         }
 
 
+
+
+        const checkConn = JSON.parse(localStorage.getItem('admin-connect'));
+
+        if (checkConn) {
+            console.log("check admin connect: ", checkConn)
+            connectEffect();
+        }
+
+
         // getLoginKey()
     }, [])
 
@@ -124,8 +182,9 @@ export default function ({ }) {
                             </button>
                             : <button
                                 type="button"
+                                onClick={disconnectUser}
                                 className="btn btn-danger"
-                                >
+                            >
                                 Disconnect
                             </button>
                         }
@@ -146,7 +205,10 @@ export default function ({ }) {
                             type="text"
                             value={name}
                             className="form-control mt-1"
-                            placeholder="Enter email"
+                            placeholder="Enter name"
+                            onChange={(event) => {
+                                setName(event.target.value)
+                            }}
                         />
                     </div>
                     <div className="form-group mt-3">
@@ -157,6 +219,9 @@ export default function ({ }) {
                             value={age}
                             className="form-control mt-1"
                             placeholder="Enter Age"
+                            onChange={(event) => {
+                                setAge(event.target.value)
+                            }}
                         />
                     </div>
                     <div className="form-group mt-3">
@@ -167,6 +232,9 @@ export default function ({ }) {
                             value={text}
                             className="form-control mt-1"
                             placeholder="Enter Text"
+                            onChange={(event) => {
+                                setText(event.target.value)
+                            }}
                         />
                     </div>
 
@@ -174,7 +242,7 @@ export default function ({ }) {
                         <button
                             type="button"
                             className="btn btn-primary"
-                        // onClick={validateKey}
+                            onClick={updateData}
                         >
                             Update
                         </button>
